@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Farida Mohammed — Video Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0e0d0b;--char:#181612;--ash:#222018;--dusk:#2c2820;
+  --cream:#e6e0d4;--cream2:#c6bca8;--muted:#78706a;--ghost:#3c3830;
+  --tung:#b48e58;--tung2:#d2a668;
+  --b1:rgba(230,224,212,0.07);--b2:rgba(230,224,212,0.13);
+}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.75;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  opacity:0.03;mix-blend-mode:overlay}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *{transition-duration:0.01ms!important;animation-duration:0.01ms!important}
+}
+a:focus-visible,button:focus-visible{outline:1px solid var(--tung);outline-offset:2px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.4rem 3rem;transition:all 0.5s}
+nav.on{background:rgba(14,13,11,0.93);backdrop-filter:blur(20px);padding:0.9rem 3rem;border-bottom:0.5px solid var(--b1)}
+.logo{font-family:'Cormorant Garamond',serif;font-size:0.95rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--tung);text-decoration:none;font-weight:400}
+.nav-r{display:flex;align-items:center;gap:2rem}
+.nav-r a{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.3s}
+.nav-r a:hover{color:var(--cream)}
+.nav-cta{padding:0.45rem 1.2rem;border:0.5px solid var(--b2);color:var(--cream2)!important;border-radius:1px}
+.nav-cta:hover{border-color:var(--tung)!important;color:var(--tung)!important}
+
+/* DOTS */
+#dots{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);z-index:400;display:flex;flex-direction:column;gap:0.55rem}
+.dot{width:2px;height:2px;border-radius:50%;background:var(--ghost);cursor:pointer;border:none;padding:0;transition:all 0.4s}
+.dot.on{background:var(--tung);height:14px;border-radius:1px}
+
+/* REVEALS */
+.r{opacity:0;transform:translateY(18px);transition:opacity 0.9s ease,transform 0.9s ease}
+.r.in{opacity:1;transform:none}
+.rs{opacity:0;transition:opacity 1.6s ease}.rs.in{opacity:1}
+.d1{transition-delay:0.12s}.d2{transition-delay:0.24s}.d3{transition-delay:0.36s}
+
+/* ── HERO (single column, calm, centered) ── */
+#hero{min-height:96vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9rem 2rem 6rem;border-bottom:0.5px solid var(--b1);position:relative}
+#hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,rgba(180,142,88,0.06) 0%,transparent 60%);pointer-events:none}
+.hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(3.4rem,7.4vw,6.8rem);font-weight:300;line-height:0.95;letter-spacing:0.01em;margin-bottom:1.4rem;color:var(--cream);position:relative;z-index:1}
+.hero-name em{font-style:italic;color:var(--tung2)}
+.hero-prof{font-size:0.95rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--cream2);margin-bottom:1rem;position:relative;z-index:1}
+.hero-spec{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.3rem;font-weight:300;letter-spacing:0.01em;color:var(--tung2);margin-bottom:2.2rem;position:relative;z-index:1}
+.hero-div{width:32px;height:0.5px;background:var(--tung);margin-bottom:2rem;opacity:0.6}
+.hero-philosophy{font-size:0.92rem;font-weight:300;color:var(--muted);max-width:480px;line-height:1.85;margin-bottom:3rem;position:relative;z-index:1}
+.hero-btns{display:flex;gap:1.1rem;flex-wrap:wrap;justify-content:center;align-items:center;position:relative;z-index:1}
+.btn-s{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.7rem 1.7rem;border-radius:1px;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.35s;font-family:'DM Sans',sans-serif;font-weight:300}
+.btn-solid{background:var(--tung);color:var(--ink);border:0.5px solid var(--tung)}
+.btn-solid:hover{background:transparent;color:var(--tung)}
+.btn-line{background:transparent;color:var(--cream2);border:0.5px solid var(--b2)}
+.btn-line:hover{border-color:var(--tung);color:var(--tung)}
+.btn-hero-primary{font-size:0.72rem;letter-spacing:0.16em;padding:1.05rem 2.5rem;box-shadow:0 0 0 0 rgba(180,142,88,0);transition:all 0.4s}
+.btn-hero-primary:hover{box-shadow:0 4px 28px -6px rgba(180,142,88,0.45)}
+.btn-hero-secondary{font-size:0.62rem;padding:1.05rem 1.8rem}
+
+
+.section-label{font-size:0.5rem;letter-spacing:0.24em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:0.6rem;padding-top:0.3rem}
+.section-label::before{content:'';width:14px;height:0.5px;background:var(--muted)}
+
+/* ── SKILLS ── */
+#skills{padding:6rem 3rem;border-bottom:0.5px solid var(--b1)}
+.skills-h{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2rem,3.5vw,3.5rem);color:var(--cream);margin-bottom:3rem}
+.skills-h em{font-style:italic;color:var(--tung2)}
+.skills-block{margin-bottom:2.4rem}
+.skills-block:last-child{margin-bottom:0}
+.skills-cat-label{font-size:0.5rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:0.9rem}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--b1)}
+.skill-card{background:var(--char);padding:1.4rem 1rem;text-align:center;font-size:0.78rem;color:var(--cream2);letter-spacing:0.02em;transition:background 0.3s,color 0.3s}
+.skill-note{display:block;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem}
+.skill-card:hover{background:var(--ash);color:var(--tung2)}
+
+/* ── PROJECTS ── */
+#projects{padding:6rem 3rem;border-bottom:0.5px solid var(--b1)}
+.proj-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.8rem}
+.proj-h{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.5rem);font-weight:300;color:var(--cream)}
+.filters{display:flex;gap:0.3rem;margin-bottom:2rem;flex-wrap:wrap}
+.fb{font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.3rem 0.85rem;cursor:pointer;background:transparent;color:var(--ghost);border:0.5px solid var(--b1);transition:all 0.3s;font-family:'DM Sans',sans-serif;font-weight:300;border-radius:1px}
+.fb:hover{color:var(--muted);border-color:var(--b2)}
+.fb.on{color:var(--tung);border-color:rgba(180,142,88,0.35)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1)}
+.pcard{background:var(--char);cursor:pointer;transition:background 0.4s;overflow:hidden;position:relative}
+.pcard:hover{background:var(--ash)}
+.pcard.hide{display:none}
+.pcard.featured{grid-column:span 2}
+.pcard.featured.hide{grid-column:span 1}
+.pthumb{aspect-ratio:16/9;background:var(--dusk);position:relative;overflow:hidden;border-bottom:0.5px solid var(--b1);display:flex;align-items:center;justify-content:center}
+.pcard.featured .pthumb{aspect-ratio:21/9}
+.pcard[data-short="1"] .pthumb{aspect-ratio:3/4}
+.pthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.6;transition:opacity 0.4s}
+.pcard:hover .pthumb img{opacity:0.82}
+.pthumb-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.55rem;z-index:1}
+.pplay{width:44px;height:44px;border-radius:50%;border:0.5px solid rgba(230,224,212,0.45);background:rgba(14,13,11,0.4);display:flex;align-items:center;justify-content:center;transition:all 0.35s;backdrop-filter:blur(4px)}
+.pcard:hover .pplay{border-color:var(--tung);background:rgba(180,142,88,0.12);transform:scale(1.08)}
+.pplay svg{width:12px;height:12px;fill:var(--cream);margin-left:2px}
+.pbadge{font-size:0.46rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.18rem 0.55rem;border:0.5px solid rgba(230,224,212,0.2);color:rgba(230,224,212,0.65);border-radius:1px;background:rgba(14,13,11,0.45);backdrop-filter:blur(4px)}
+.pfeat-tag{position:absolute;top:0.8rem;left:0.9rem;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.16rem 0.5rem;border:0.5px solid rgba(180,142,88,0.4);color:var(--tung);border-radius:1px;background:rgba(14,13,11,0.6);backdrop-filter:blur(4px);z-index:2}
+.pinfo{padding:1rem 1.2rem 1.3rem}
+.pname{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;margin-bottom:0.15rem;letter-spacing:0.01em;color:var(--cream)}
+.prole{font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+.psoft{font-size:0.56rem;letter-spacing:0.08em;color:var(--ghost);margin-top:0.18rem}
+.psnip{font-size:0.7rem;color:var(--ghost);margin-top:0.4rem;line-height:1.5}
+/* more projects — inline as extra filter tab */
+.more-strip{margin-top:1px;background:var(--char);border-top:0.5px solid var(--b1)}
+.more-grid{display:none;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1)}
+.more-grid.open{display:grid}
+
+/* ── EXP ── */
+#exp{padding:6rem 3rem;border-bottom:0.5px solid var(--b1)}
+.exp-h{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.5rem);font-weight:300;color:var(--cream);margin-bottom:3rem}
+.exp-h em{font-style:italic;color:var(--tung2)}
+.exp-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:4rem;align-items:start}
+.exp-col-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;font-weight:300;color:var(--tung2);opacity:0.85;margin-bottom:1.1rem}
+.edu-school{font-size:0.95rem;color:var(--cream);margin-bottom:0.15rem}
+.edu-detail{font-size:0.72rem;color:var(--muted)}
+.edu-grad{font-size:0.6rem;color:var(--muted);font-style:italic;margin-top:0.25rem}
+.exp-date{font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:0.12rem}
+.witem{margin-bottom:1.5rem}
+.witem-head{display:flex;gap:0.55rem;align-items:flex-start;margin-bottom:0.4rem}
+.wdot{width:2px;height:2px;border-radius:50%;background:var(--tung);margin-top:0.56rem;flex-shrink:0;opacity:0.55}
+.wco{font-size:0.9rem;color:var(--cream);margin-bottom:0.06rem}
+.wrole{font-size:0.68rem;color:var(--tung2);font-style:italic;line-height:1.4;opacity:0.8}
+.wbullets{padding-left:1.1rem;display:flex;flex-direction:column;gap:0.25rem;margin-top:0.3rem}
+.wb{font-size:0.7rem;color:var(--muted);line-height:1.5;display:flex;gap:0.5rem;align-items:flex-start}
+.wb::before{content:'·';color:var(--tung);flex-shrink:0;opacity:0.6}
+.lang-item{display:flex;align-items:flex-start;gap:0.5rem;font-size:0.78rem;color:var(--cream2);margin-bottom:0.42rem}
+.lang-item::before{content:'';width:1.5px;height:0.78rem;background:var(--tung);opacity:0.45;margin-top:0.22rem;flex-shrink:0}
+.lang-sub{font-size:0.58rem;color:var(--muted);font-style:italic}
+
+/* ── CONTACT ── */
+#contact{padding:6rem 3rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;border:none}
+.contact-h{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,4.5vw,5rem);font-weight:300;line-height:0.95;margin-bottom:1.2rem;color:var(--cream)}
+.contact-h em{font-style:italic;color:var(--tung2)}
+.contact-sub{font-size:0.8rem;color:var(--muted);line-height:1.85;max-width:300px;margin-bottom:0.5rem}
+.contact-response{font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ghost);margin-bottom:2rem}
+.clinks{display:flex;flex-direction:column;gap:0.7rem}
+.cl{font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:0.55rem;transition:color 0.3s}
+.cl:hover{color:var(--tung2)}
+.cl::before{content:'';width:12px;height:0.5px;background:currentColor;flex-shrink:0;opacity:0.5}
+.contact-r{padding-left:3rem;border-left:0.5px solid var(--b1);display:flex;flex-direction:column;gap:1.8rem}
+.avail-line{display:flex;align-items:center;gap:0.55rem;font-size:0.54rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted)}
+.avail-dot{width:4px;height:4px;border-radius:50%;background:var(--tung);opacity:0.7;animation:breathe 2.5s infinite ease-in-out}
+@keyframes breathe{0%,100%{opacity:0.7}50%{opacity:0.2}}
+.cdetail{font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ghost)}
+
+/* ── MODAL ── */
+#modal{display:none;position:fixed;inset:0;z-index:900;background:rgba(8,7,5,0.97);align-items:center;justify-content:center;padding:2rem}
+#modal.open{display:flex}
+.mi{background:var(--char);border:0.5px solid var(--b2);width:100%;max-width:860px;max-height:90vh;overflow-y:auto;position:relative}
+.mclose{position:absolute;top:0.9rem;right:1.1rem;background:transparent;border:none;font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--muted);cursor:pointer;z-index:10;transition:color 0.3s;line-height:1}
+.mclose:hover{color:var(--cream)}
+.mthumb{position:relative;aspect-ratio:16/9;overflow:hidden;border-bottom:0.5px solid var(--b1);background:var(--dusk);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.mthumb.port{aspect-ratio:9/16;max-height:360px;width:auto;margin:0 auto}
+.mthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;transition:opacity 0.35s}
+.mthumb:hover img{opacity:0.7}
+.mthumb-ctr{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0.7rem}
+.mbig-play{width:72px;height:72px;border-radius:50%;border:1.5px solid rgba(230,224,212,0.55);background:rgba(14,13,11,0.5);display:flex;align-items:center;justify-content:center;transition:all 0.3s;backdrop-filter:blur(8px)}
+.mthumb:hover .mbig-play{border-color:var(--tung);background:rgba(180,142,88,0.15);transform:scale(1.05)}
+.mbig-play svg{width:22px;height:22px;fill:var(--cream);margin-left:4px}
+.mplay-lbl{font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(230,224,212,0.55)}
+.mbody{padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.mtitle{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:300;color:var(--cream);margin-bottom:0.25rem}
+.mcat{font-size:0.52rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--tung);margin-bottom:0.8rem}
+.mdesc{font-size:0.82rem;color:var(--cream2);line-height:1.85;margin-bottom:0.8rem}
+.msec{font-size:0.5rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin:1rem 0 0.5rem;padding-bottom:0.35rem;border-bottom:0.5px solid var(--b1)}
+.msec:first-child{margin-top:0}
+.mstep{display:flex;gap:0.65rem;margin-bottom:0.9rem}
+.msn{font-family:'Cormorant Garamond',serif;font-size:0.78rem;color:var(--tung);width:auto;flex-shrink:0;opacity:0.85;letter-spacing:0.04em}
+.mst{font-size:0.76rem;color:var(--muted);line-height:1.65}
+.mst strong{color:var(--cream2);font-weight:400;display:block;font-family:'DM Sans',sans-serif;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.2rem}
+.mtags{display:flex;flex-wrap:wrap;gap:0.28rem;margin-top:0.7rem}
+.mtag{font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.55rem;border:0.5px solid var(--b1);color:var(--muted);border-radius:1px}
+.mtools{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem}
+.mtool{font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.55rem;border:0.5px solid rgba(180,142,88,0.25);color:var(--tung);border-radius:1px}
+.mdelivs{display:flex;flex-direction:column;gap:0.35rem;margin-top:0.5rem}
+.mdeliv{font-size:0.72rem;color:var(--cream2);display:flex;gap:0.5rem;align-items:flex-start}
+.mdeliv::before{content:'·';color:var(--tung);flex-shrink:0}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:1.1rem 1.4rem}
+  nav.on{padding:0.8rem 1.4rem}
+  .nav-r{gap:1.2rem}
+  .nav-r a:not(.nav-cta){display:none}
+  #dots{display:none}
+
+  #hero{padding:7rem 1.4rem 3.5rem}
+  .hero-name{font-size:clamp(2.8rem,13vw,4.5rem)}
+  .hero-philosophy{max-width:100%}
+  .hero-btns{flex-direction:column;width:100%}
+  .btn-s{text-align:center}
+
+  .section-label{margin-bottom:0.5rem}
+  #skills{padding:4rem 1.4rem}
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+
+  #projects{padding:4rem 1.4rem}
+  .pgrid{grid-template-columns:1fr;background:transparent;gap:1px}
+  .pcard.featured{grid-column:span 1}
+  .pcard.featured .pthumb{aspect-ratio:16/9}
+  .filters{gap:0.25rem}
+  .fb{font-size:0.46rem;padding:0.28rem 0.7rem}
+  .more-grid{grid-template-columns:1fr}
+
+  #exp{padding:4rem 1.4rem}
+  .exp-grid{grid-template-columns:1fr;gap:2.5rem}
+
+  #contact{grid-template-columns:1fr;padding:4rem 1.4rem 3.5rem;gap:2.5rem}
+  .contact-r{padding-left:0;border-left:none;border-top:0.5px solid var(--b1);padding-top:2rem}
+  .contact-h{font-size:clamp(2.2rem,10vw,3.5rem)}
+
+  #modal{padding:0;align-items:flex-end}
+  .mi{max-height:92vh;border-radius:0}
+  .mbody{grid-template-columns:1fr;gap:1.2rem;padding:1.4rem}
+  .mtitle{font-size:1.5rem}
+}
+
+@media(max-width:480px){
+  .hero-name{font-size:clamp(2.4rem,15vw,3.6rem)}
+  nav{padding:1rem 1.2rem}
+  #hero{padding:6.5rem 1.2rem 3rem}
+  #skills,#projects,#exp,#contact{padding-left:1.2rem;padding-right:1.2rem}
+  .skills-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#hero" class="logo">F · M</a>
+  <div class="nav-r">
+    <a href="#projects">Work</a>
+    <a href="#contact" class="nav-cta">Get in Touch</a>
+  </div>
+</nav>
+
+<div id="dots">
+  <button class="dot on" data-t="hero"></button>
+  <button class="dot" data-t="projects"></button>
+  <button class="dot" data-t="skills"></button>
+  <button class="dot" data-t="exp"></button>
+  <button class="dot" data-t="contact"></button>
+</div>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <h1 class="hero-name r"><em>Farida</em> Mohammed</h1>
+  <p class="hero-prof r d1">Video Editor</p>
+  <p class="hero-spec r d1">Specializing in Documentary, Broadcast &amp; Story-Driven Editing</p>
+  <div class="hero-div r d2"></div>
+  <p class="hero-philosophy r d2">I shape raw footage into structured, emotionally resonant stories — built scene by scene through pacing, sound, and image.</p>
+  <div class="hero-btns r d3">
+    <a href="#projects" class="btn-s btn-solid btn-hero-primary">View Projects</a>
+    <a href="#contact" class="btn-s btn-line btn-hero-secondary">Get in Touch</a>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="proj-top r">
+    <h2 class="proj-h">Featured Projects</h2>
+  </div>
+  <div class="filters r d1" id="filter-row">
+    <button class="fb on" data-f="all">All</button>
+    <button class="fb" data-f="broadcast">Broadcast</button>
+    <button class="fb" data-f="creative">Creative</button>
+    <button class="fb" data-f="social">Social</button>
+    <button class="fb" data-f="more" id="more-btn">Additional Work ↓</button>
+  </div>
+
+  <div class="pgrid" id="main-grid">
+
+    <!-- 1 · TA-MERY FULL FILM -->
+    <div class="pcard featured r" id="p-tamery-film" data-cat="creative" data-yt="ZHsBIK3jj0k" data-short="0"
+      data-title="Ta-Mery — Investigative Documentary Film"
+      data-role="Editor · Colorist · Sound Design · Graphics"
+      data-delivs="Multicam Editing|Color Grading|Color Correction|Sound Design|Graphics Design|Narrative Structuring"
+      data-tools="Adobe Premiere Pro"
+      data-desc="Ta-Mery is an investigative documentary examining Afrocentrism and how Afrocentric claims to Egyptian civilisation are examined and refuted through genetics, anthropology, and historical evidence. Multiple experts consulted. Full pipeline: multicam editing, color grading and correction, sound design, narrative structuring, and original graphics design."
+      data-process='[["Challenge","Years of footage and several expert interviews on a sensitive, identity-driven subject needed to be unified into one coherent, trustworthy documentary."],["Creative Approach","Synced and structured the multicam interviews around a clear investigative arc, then built a full sound and color pass for a consistent cinematic tone — supported by original motion graphics where the evidence needed to speak for itself."],["Result","A feature-length investigative documentary with a complete post-production pipeline — edit, grade, sound, and graphics — delivered as sole editor."]]'
+      data-tags="Documentary,Color Grade,Sound Design,Multicam,Graphics">
+      <div class="pthumb">
+        <span class="pfeat-tag">Latest</span>
+        <img src="https://img.youtube.com/vi/ZHsBIK3jj0k/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/ZHsBIK3jj0k/hqdefault.jpg'" alt=""/>
+        <div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Documentary · Investigative</span></div>
+      </div>
+      <div class="pinfo">
+        <div class="pname">Ta-Mery</div>
+        <div class="prole">Editor · Colorist · Sound Design · Graphics</div>
+        <div class="psoft">Adobe Premiere Pro</div>
+        <div class="psnip">Investigative documentary — Afrocentrism and Egyptian identity. Multicam, full grade, sound design, original graphics.</div>
+      </div>
+    </div>
+
+    <!-- 2 · TA-MERY TRAILER -->
+    <div class="pcard r" id="p-tamery" data-cat="creative" data-yt="r8QvD2pjaAc" data-short="0"
+      data-title="Ta-Mery — Investigative Film Trailer"
+      data-role="Editor · Colorist · Sound Design"
+      data-delivs="Trailer Edit|Color Grading|Color Correction|Sound Design|Narrative Structuring"
+      data-tools="Adobe Premiere Pro"
+      data-desc="Trailer for Ta-Mery, an investigative film examining Afrocentricity and Egyptian identity — how genetic, historical, and anthropological evidence engages with Afrocentric claims. Responsible for the full edit, sound design, and color grading and correction."
+      data-process='[["Challenge","Translate a feature-length investigative film into a short, high-tension trailer that earns attention without overselling the subject."],["Creative Approach","Built escalating tension across the cut — pacing to mirror the film’s investigative reveal — with a full sound design pass and color grade carrying the emotional weight."],["Result","A trailer that reads as cinematic and credible, setting the tone for the full documentary."]]'
+      data-tags="Trailer,Color Grade,Sound Design,Documentary">
+      <div class="pthumb">
+        <span class="pfeat-tag">Trailer</span>
+        <img src="https://img.youtube.com/vi/r8QvD2pjaAc/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/r8QvD2pjaAc/hqdefault.jpg'" alt=""/>
+        <div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Trailer · Documentary</span></div>
+      </div>
+      <div class="pinfo">
+        <div class="pname">Ta-Mery — Trailer</div>
+        <div class="prole">Editor · Colorist · Sound Design</div>
+        <div class="psoft">Adobe Premiere Pro</div>
+        <div class="psnip">Investigative film trailer — Egyptian identity and Afrocentricity. Full pipeline: edit, grade, sound.</div>
+      </div>
+    </div>
+
+    <!-- 3 · NEWSCAST -->
+    <div class="pcard r" id="p-newscast" data-cat="broadcast" data-yt="da1eFLimkuE" data-short="0"
+      data-title="The Newscast — Full Broadcast Production"
+      data-role="Main Video Editor · News Editor · Motion Graphics"
+      data-delivs="Broadcast Assembly|News Editing|Story Translation|Lower Third Design|Motion Graphics Package|Camera Operation"
+      data-tools="Adobe Premiere Pro|After Effects"
+      data-desc="A full student newscast produced end to end. Lead editor responsible for the complete assembly, news editing, story translation, and the full motion graphics package — every lower third, title card, and on-screen element."
+      data-process='[["Challenge","A full student newscast needed to be assembled end-to-end — sourced, translated, structured, and finished on a broadcast deadline."],["Creative Approach","Led the edit from raw footage to final delivery while designing and animating a full motion graphics package — lower thirds, title cards, and on-screen elements — for a consistent broadcast identity."],["Result","A complete broadcast production, edited and graphics-finished as lead editor."]]'
+      data-tags="Broadcast,Newscast,Motion Graphics,Lower Thirds">
+      <div class="pthumb">
+        <span class="pfeat-tag">Featured</span>
+        <img src="https://img.youtube.com/vi/da1eFLimkuE/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/da1eFLimkuE/hqdefault.jpg'" alt=""/>
+        <div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Broadcast</span></div>
+      </div>
+      <div class="pinfo">
+        <div class="pname">The Newscast</div>
+        <div class="prole">Main Editor · Graphics</div>
+        <div class="psoft">Premiere Pro · After Effects</div>
+        <div class="psnip">Full broadcast production — assembled, edited, full graphics package.</div>
+      </div>
+    </div>
+
+    <!-- 4 · HORROR PODCAST -->
+    <div class="pcard r" id="p-podcast" data-cat="creative" data-yt="jklN-oApmro" data-short="0"
+      data-title="على حافة الواقع — Horror Podcast"
+      data-role="Editor · Sound Design"
+      data-delivs="Full Sound Design|Atmospheric Edit|Horror Audio Production"
+      data-tools="Adobe Premiere Pro"
+      data-desc="A horror podcast episode — On the Edge of Reality. Full edit and sound design, building an atmospheric, tension-driven audio experience throughout."
+      data-process='[["Challenge","An audio-only horror format has nowhere to hide — tension has to be built entirely through sound."],["Creative Approach","Layered ambient texture, effects, and music to construct a sustained atmosphere, pacing the episode for psychological impact rather than jump-scare rhythm."],["Result","A fully sound-designed episode that holds tension from open to close."]]'
+      data-tags="Podcast,Sound Design,Horror,Audio">
+      <div class="pthumb">
+        <img src="https://img.youtube.com/vi/jklN-oApmro/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/jklN-oApmro/hqdefault.jpg'" alt=""/>
+        <div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Podcast · Horror</span></div>
+      </div>
+      <div class="pinfo">
+        <div class="pname">على حافة الواقع</div>
+        <div class="prole">Editor · Sound Design</div>
+        <div class="psoft">Adobe Premiere Pro</div>
+        <div class="psnip">Horror podcast — full atmospheric sound design.</div>
+      </div>
+    </div>
+
+    <!-- 5 · SCREEN TIME -->
+    <div class="pcard r" data-cat="creative" data-yt="EJMQzxyVja8" data-short="0"
+      data-title="Screen Time — Parental Control PSA"
+      data-role="Editor · Shooting Assistant"
+      data-delivs="PSA Edit|Sound Selection|Narrative Pacing|Shooting Assistance"
+      data-tools="Adobe Premiere Pro"
+      data-desc="A PSA on children losing childhood to screens. Sound-led edit that builds tension slowly — the emotional weight arrives before it is stated."
+      data-process='[["Challenge","Convey the emotional cost of children losing childhood to screens without becoming preachy or sentimental."],["Creative Approach","Let sound carry the argument before a single image lands — building tension slowly through deliberate pacing and honest, unscripted moments rather than the cleanest takes."],["Result","A sound-led PSA where the emotional weight arrives quietly, then lands hard."]]'
+      data-tags="PSA,Creative,Sound Design">
+      <div class="pthumb">
+        <img src="https://img.youtube.com/vi/EJMQzxyVja8/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/EJMQzxyVja8/hqdefault.jpg'" alt=""/>
+        <div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Creative · PSA</span></div>
+      </div>
+      <div class="pinfo">
+        <div class="pname">Screen Time</div>
+        <div class="prole">Editor · Shooting Assistant</div>
+        <div class="psoft">Adobe Premiere Pro</div>
+        <div class="psnip">Sound-led PSA — childhood lost to screens.</div>
+      </div>
+    </div>
+
+    <!-- 6 · KARMOUZ WAR -->
+    <div class="pcard r" data-cat="creative" data-yt="syto9ws89Ec" data-short="0"
+      data-title="Karmouz War — Trailer"
+      data-role="Editor · Sound Design"
+      data-delivs="Trailer Edit|Sound Design|Narrative Structuring|Pacing"
+      data-tools="Adobe Premiere Pro"
+      data-desc="Trailer for Karmouz War starring Amir Karara. Explores advanced cutting, sound design, pacing, and trailer narrative structure — building tension and emotional investment across a compressed format."
+      data-process='[["Challenge","A feature trailer for a professionally shot production needed commercial-grade pacing and tension within a compressed runtime."],["Creative Approach","Structured a three-act trailer arc — setup, escalation, hook — using match cuts, J/L cuts, and rhythmic editing, layered with a full sound design pass."],["Result","A trailer with commercial-grade pacing and tension, built from professionally shot material."]]'
+      data-tags="Trailer,Sound Design,Cutting Techniques">
+      <div class="pthumb">
+        <img src="https://img.youtube.com/vi/syto9ws89Ec/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/syto9ws89Ec/hqdefault.jpg'" alt=""/>
+        <div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Trailer</span></div>
+      </div>
+      <div class="pinfo">
+        <div class="pname">Karmouz War — Trailer</div>
+        <div class="prole">Editor · Sound Design</div>
+        <div class="psoft">Adobe Premiere Pro</div>
+        <div class="psnip">Advanced cutting techniques and layered sound design.</div>
+      </div>
+    </div>
+
+    <!-- 7 · ART DE EGYPT -->
+    <div class="pcard r" data-cat="broadcast" data-yt="EYxGvO1wwts" data-short="0"
+      data-title="Art De Egypt — News Feature"
+      data-role="Editor · Narrative · Sound Selection"
+      data-delivs="Feature Edit|Narrative Construction|Sound Selection|Broadcast Delivery"
+      data-tools="Adobe Premiere Pro"
+      data-desc="Broadcast news feature on art and culture in Egypt. Built the full narrative from scratch — selecting sound, structuring the story, shaping the arc as sole editor."
+      data-process='[["Challenge","Turn raw footage on art and culture in Egypt into a clear broadcast narrative with no existing structure."],["Creative Approach","Built the story arc from scratch — choosing what to show and in what order — and selected music to support the subject, working as sole editor end to end."],["Result","A complete broadcast feature, structured, scored, and delivered independently."]]'
+      data-tags="Broadcast,Feature,Culture,Egypt">
+      <div class="pthumb">
+        <img src="https://img.youtube.com/vi/EYxGvO1wwts/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/EYxGvO1wwts/hqdefault.jpg'" alt=""/>
+        <div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Broadcast · Feature</span></div>
+      </div>
+      <div class="pinfo">
+        <div class="pname">Art De Egypt</div>
+        <div class="prole">Editor · Narrative</div>
+        <div class="psoft">Adobe Premiere Pro</div>
+        <div class="psnip">News feature — art and culture in Egypt.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ADDITIONAL WORK — shown when "Additional Work" filter clicked -->
+  <div class="more-strip" id="more-strip" style="display:none">
+    <div class="more-grid open" id="more-grid">
+
+      <div class="pcard" data-cat="broadcast" data-yt="8A4rvOXdOK8" data-short="0"
+        data-title="FetProduct — News Feature" data-role="Editor · Narrative"
+        data-delivs="Feature Edit|Narrative Construction|Sound Selection"
+        data-tools="Adobe Premiere Pro"
+        data-desc="Broadcast news feature on FetProduct. Sole editor — built the narrative, selected the music, shaped the piece end to end."
+        data-process='[["Challenge","Raw footage with no existing narrative needed to become a broadcast-ready feature on a deadline."],["Creative Approach","Constructed the story arc from the raw material, chose supporting music, and delivered the full edit independently."],["Result","A broadcast-ready feature delivered solo, start to finish."]]'
+        data-tags="Broadcast,Feature,Commercial">
+        <div class="pthumb"><img src="https://img.youtube.com/vi/8A4rvOXdOK8/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/8A4rvOXdOK8/hqdefault.jpg'" alt=""/><div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Broadcast</span></div></div>
+        <div class="pinfo"><div class="pname">FetProduct</div><div class="prole">Editor · Narrative</div><div class="psoft">Adobe Premiere Pro</div><div class="psnip">Broadcast news feature.</div></div>
+      </div>
+
+      <div class="pcard" id="p-mindmaze" data-cat="social" data-yt="hinZnvEzDXA" data-short="1"
+        data-title="Mind Maze — Social Teaser" data-role="Editor · Voiceover · Narrative"
+        data-delivs="Voiceover Recording|Narrative Edit|Social Media Delivery"
+        data-tools="Adobe Premiere Pro"
+        data-desc="Behind-the-scenes social teaser for Mind Maze. Wrote and recorded the voiceover, developed the narrative, selected the sound, and edited for social media."
+        data-process='[["Challenge","A behind-the-scenes social teaser needed a voice and a narrative, not just footage."],["Creative Approach","Wrote and recorded the voiceover, shaped the story for short-form vertical viewing, and cut for social delivery."],["Result","A teaser with its own narrative voice, built for social platforms."]]'
+        data-tags="Social,Voiceover,Short-form">
+        <div class="pthumb" style="aspect-ratio:3/4"><img src="https://img.youtube.com/vi/hinZnvEzDXA/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/hinZnvEzDXA/hqdefault.jpg'" alt=""/><div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Social</span></div></div>
+        <div class="pinfo"><div class="pname">Mind Maze</div><div class="prole">Editor · Voiceover</div><div class="psoft">Adobe Premiere Pro</div><div class="psnip">Social teaser — voiceover and narrative edit.</div></div>
+      </div>
+
+      <div class="pcard" data-cat="social" data-yt="LLYRkLPVesc" data-short="1"
+        data-title="Comet Vlog" data-role="Editor · Sound Selection"
+        data-delivs="Short-form Edit|Sound Selection|Social Delivery"
+        data-tools="Adobe Premiere Pro"
+        data-desc="Short-form vlog for Comet Student Activity. Selected the sound and edited for social media delivery."
+        data-process='[["Creative Approach","Chose audio matching the energy and tone, then cut and delivered for vertical format."],["Result","A short-form student activity vlog ready for social delivery."]]'
+        data-tags="Social,Vlog,Short-form">
+        <div class="pthumb" style="aspect-ratio:3/4"><img src="https://img.youtube.com/vi/LLYRkLPVesc/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/LLYRkLPVesc/hqdefault.jpg'" alt=""/><div class="pthumb-ov"><div class="pplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="pbadge">Social</span></div></div>
+        <div class="pinfo"><div class="pname">Comet Vlog</div><div class="prole">Editor · Sound Selection</div><div class="psoft">Adobe Premiere Pro</div><div class="psnip">Short-form student activity vlog.</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="section-label r">Skills</div>
+  <h2 class="skills-h r d1">Tools</h2>
+
+  <div class="skills-block r d2">
+    <div class="skills-cat-label">Software</div>
+    <div class="skills-grid">
+      <div class="skill-card">Adobe Premiere Pro</div>
+      <div class="skill-card">After Effects<span class="skill-note">Basics</span></div>
+      <div class="skill-card">DaVinci Resolve<span class="skill-note">Color Grading Only</span></div>
+    </div>
+  </div>
+
+  <div class="skills-block r d3">
+    <div class="skills-cat-label">Expertise</div>
+    <div class="skills-grid">
+      <div class="skill-card">Color Grading &amp; Correction</div>
+      <div class="skill-card">Sound Design</div>
+      <div class="skill-card">Documentary Editing</div>
+      <div class="skill-card">Broadcast Editing</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ── -->
+<section id="exp">
+  <h2 class="exp-h r">Experience</h2>
+  <div class="exp-grid">
+    <div class="r">
+      <div class="exp-col-title">Education &amp; Work</div>
+      <div style="margin-bottom:1.8rem">
+        <div style="font-size:0.55rem;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.12rem">2022 – Present</div>
+        <div class="edu-school">Cairo University</div>
+        <div class="edu-detail">Mass Communication — English Section</div>
+        <div class="edu-grad">Graduating this semester</div>
+      </div>
+      <div class="witem">
+        <div class="witem-head"><span class="wdot"></span><div><div class="exp-date">Dec 2025 – Feb 2026</div><div class="wco">Egypt Telegraph</div><div class="wrole">Video Editing Intern</div></div></div>
+        <div class="wbullets">
+          <div class="wb">Edited short-form video content for digital and social platforms</div>
+          <div class="wb">Structured and paced videos to match social media trends</div>
+          <div class="wb">Collaborated with content team under tight delivery deadlines</div>
+        </div>
+      </div>
+      <div class="witem">
+        <div class="witem-head"><span class="wdot"></span><div><div class="exp-date">2024</div><div class="wco">El Hadith El Youm Channel</div><div class="wrole">Video Editing Intern</div></div></div>
+        <div class="wbullets">
+          <div class="wb">Edited news segments and program highlights for television broadcast</div>
+          <div class="wb">Assisted senior editors with timeline structuring and transitions</div>
+          <div class="wb">Worked under fast-paced daily deadlines in a live news environment</div>
+        </div>
+      </div>
+      <div class="witem">
+        <div class="witem-head"><span class="wdot"></span><div><div class="exp-date">2025</div><div class="wco">Maspero Al-Aghbar Al-Masmoua · National Egyptian Radio</div><div class="wrole">News Editing Intern</div></div></div>
+        <div class="wbullets">
+          <div class="wb">Edited Arabic-language news content for radio broadcast</div>
+          <div class="wb">Translated news stories from English to Arabic</div>
+          <div class="wb">Wrote scripts for news programs and observed live production workflows</div>
+        </div>
+      </div>
+      <div class="witem"><div class="witem-head"><span class="wdot"></span><div><div class="exp-date">2022 – Present</div><div class="wco">Interact Sarayat El Maadi</div><div class="wrole">PR Director &amp; Active Member</div></div></div></div>
+      <div class="witem"><div class="witem-head"><span class="wdot"></span><div><div class="exp-date">2023 – Present</div><div class="wco">Rotaract Sarayat El Maadi</div><div class="wrole">PR Director &amp; Active Member</div></div></div></div>
+      <div class="witem"><div class="witem-head"><span class="wdot"></span><div><div class="exp-date">2023 – 2024</div><div class="wco">Comet Student Activity</div><div class="wrole">PR Committee Member</div></div></div></div>
+    </div>
+    <div class="r d1">
+      <div class="exp-col-title">Languages</div>
+      <div class="lang-item"><div>Arabic<div class="lang-sub">Native</div></div></div>
+      <div class="lang-item"><div>English<div class="lang-sub">B2 — Upper Intermediate</div></div></div>
+      <div class="lang-item"><div>French<div class="lang-sub">A1 — Beginner</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="r">
+    <h2 class="contact-h">Let's Make<br><em>Something</em><br>Good.</h2>
+    <p class="contact-sub">Open to freelance projects, full-time roles, and meaningful collaborations.</p>
+    <p class="contact-response">Response within 24 hours</p>
+    <div class="clinks">
+      <a href="https://mail.google.com/mail/?view=cm&to=faridamohammedelomda2022@gmail.com" target="_blank" class="cl">Email</a>
+      <a href="https://www.linkedin.com/in/farida-mohammed-8783aa258" target="_blank" class="cl">LinkedIn</a>
+      <a href="https://drive.google.com/file/d/1QScXWhCVKA7T6gW8HL3Q-54b_7wYSF3Q/view?usp=sharing" target="_blank" rel="noopener" class="cl">Download CV</a>
+    </div>
+  </div>
+  <div class="r d1">
+    <div class="contact-r">
+      <div class="avail-line"><span class="avail-dot"></span>Available: Full-time · Freelance · Contract</div>
+      <div class="cdetail">01098338500</div>
+      <div class="cdetail">Cairo, Egypt</div>
+      <a href="#projects" class="btn-s btn-solid" style="display:inline-block;margin-top:1rem">View Work</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── MODAL ── -->
+<div id="modal">
+  <div class="mi" id="mi">
+    <button class="mclose" onclick="closeM()">×</button>
+    <div id="mthumb-wrap"></div>
+    <div class="mbody">
+      <div>
+        <div id="m-cat" class="mcat"></div>
+        <div id="m-title" class="mtitle"></div>
+        <p id="m-desc" class="mdesc"></p>
+        <div class="msec">Role</div>
+        <p id="m-role" style="font-size:0.8rem;color:var(--cream2);margin-bottom:0.5rem"></p>
+        <div class="msec">Deliverables</div>
+        <div id="m-delivs" class="mdelivs"></div>
+        <div class="msec" style="margin-top:0.8rem">Software Used</div>
+        <div id="m-tools" class="mtools"></div>
+        <div id="m-tags" class="mtags" style="margin-top:0.8rem"></div>
+      </div>
+      <div>
+        <div class="msec">Challenge · Approach · Result</div>
+        <div id="m-proc"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Nav
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('on',scrollY>60));
+
+// Dots
+const SECS=['hero','projects','skills','exp','contact'];
+document.querySelectorAll('.dot').forEach(d=>d.addEventListener('click',()=>document.getElementById(d.dataset.t).scrollIntoView({behavior:'smooth'})));
+SECS.forEach(id=>{
+  const el=document.getElementById(id);if(!el)return;
+  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=SECS.indexOf(id);document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('on',i===j))}})},{threshold:0.3}).observe(el);
+});
+
+// Reveals
+document.querySelectorAll('.r,.rs').forEach(el=>
+  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:0.06}).observe(el)
+);
+
+// Filters + Additional Work tab
+let moreOpen=false;
+document.querySelectorAll('.fb').forEach(b=>b.addEventListener('click',()=>{
+  const f=b.dataset.f;
+  if(f==='more'){
+    moreOpen=!moreOpen;
+    document.getElementById('more-strip').style.display=moreOpen?'block':'none';
+    b.textContent=moreOpen?'Additional Work ↑':'Additional Work ↓';
+    b.classList.toggle('on',moreOpen);
+    if(moreOpen)document.getElementById('more-strip').scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+  document.querySelectorAll('.fb').forEach(x=>{if(x.dataset.f!=='more')x.classList.remove('on')});
+  b.classList.add('on');
+  document.querySelectorAll('.pcard').forEach(c=>{
+    const match=f==='all'||c.dataset.cat===f;
+    c.classList.toggle('hide',!match);
+    if(c.classList.contains('featured'))c.style.gridColumn=match?'span 2':'';
+  });
+}));
+
+// VIDEO PLAYER (project cards open in new tab)
+function openP(ytId){
+  window.open('https://www.youtube.com/watch?v='+ytId,'_blank');
+}
+
+// Modal
+function openM(card){
+  const id=card.dataset.yt,short=card.dataset.short==='1';
+  const title=card.dataset.title;
+  document.getElementById('m-title').textContent=title;
+  document.getElementById('m-cat').textContent=card.dataset.cat;
+  document.getElementById('m-desc').textContent=card.dataset.desc;
+  document.getElementById('m-role').textContent=card.dataset.role;
+  const delivs=(card.dataset.delivs||'').split('|').filter(Boolean);
+  document.getElementById('m-delivs').innerHTML=delivs.map(d=>`<div class="mdeliv">${d}</div>`).join('');
+  const tools=(card.dataset.tools||'').split('|').filter(Boolean);
+  document.getElementById('m-tools').innerHTML=tools.map(t=>`<span class="mtool">${t}</span>`).join('');
+  document.getElementById('m-tags').innerHTML=(card.dataset.tags||'').split(',').map(t=>`<span class="mtag">${t.trim()}</span>`).join('');
+  document.getElementById('m-proc').innerHTML=JSON.parse(card.dataset.process).map(s=>`<div class="mstep"><span class="mst"><strong>${s[0]}</strong>${s[1]}</span></div>`).join('');
+  document.getElementById('mthumb-wrap').innerHTML=id
+    ?`<div class="mthumb${short?' port':''}" onclick="closeM();openP('${id}')">
+        <img src="https://img.youtube.com/vi/${id}/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${id}/hqdefault.jpg'" alt=""/>
+        <div class="mthumb-ctr">
+          <div class="mbig-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <span class="mplay-lbl">Play video</span>
+        </div>
+      </div>`
+    :`<div style="aspect-ratio:16/9;background:var(--dusk);display:flex;align-items:center;justify-content:center;border-bottom:0.5px solid var(--b1)"><span style="font-size:0.52rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ghost)">Video coming soon</span></div>`;
+  document.getElementById('modal').classList.add('open');
+}
+function closeM(){document.getElementById('modal').classList.remove('open')}
+document.querySelectorAll('.pcard').forEach(c=>c.addEventListener('click',()=>openM(c)));
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeM()});
+document.getElementById('mi').addEventListener('click',e=>e.stopPropagation());
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+</script>
+</body>
+</html>
